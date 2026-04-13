@@ -30,6 +30,7 @@ export interface DayWorkout {
 }
 
 export interface BodyMeasurement {
+  id?: string;
   date: string;
   weight: number | null;
   waist: number | null;

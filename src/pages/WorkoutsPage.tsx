@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { Plus, X, Dumbbell, ChevronDown, ChevronUp } from 'lucide-react';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { getDefaultCycleData, getCycleDay } from '@/lib/cycleUtils';
+import { useHealthData } from '@/contexts/HealthDataContext';
+import { getCycleDay } from '@/lib/cycleUtils';
 import CycleHeader from '@/components/CycleHeader';
-import type { CycleData, WorkoutGroup } from '@/lib/types';
+import type { WorkoutGroup } from '@/lib/types';
 
 const MAX_WORKOUTS = 5;
 
 export default function WorkoutsPage() {
-  const [data, setData] = useLocalStorage<CycleData>('fitnessData', getDefaultCycleData());
+  const { data, setData } = useHealthData();
   const currentDay = getCycleDay(data.cycleStartDate);
   const rawWorkout = data.workouts.find(w => w.day === currentDay);
   const dayWorkout = rawWorkout && 'groups' in rawWorkout

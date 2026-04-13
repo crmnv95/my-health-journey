@@ -5,12 +5,11 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { getDefaultCycleData } from '@/lib/cycleUtils';
+import { useHealthData } from '@/contexts/HealthDataContext';
 import CycleHeader from '@/components/CycleHeader';
-import type { CycleData, BodyMeasurement } from '@/lib/types';
+import type { BodyMeasurement } from '@/lib/types';
 
-const fields: { key: keyof Omit<BodyMeasurement, 'date'>; label: string; unit: string }[] = [
+const fields: { key: keyof Omit<BodyMeasurement, 'date' | 'id'>; label: string; unit: string }[] = [
   { key: 'weight', label: 'Weight', unit: 'kg' },
   { key: 'waist', label: 'Waist', unit: 'cm' },
   { key: 'hip', label: 'Hip', unit: 'cm' },
@@ -19,30 +18,23 @@ const fields: { key: keyof Omit<BodyMeasurement, 'date'>; label: string; unit: s
 ];
 
 export default function BodyPage() {
-  const [data, setData] = useLocalStorage<CycleData>('fitnessData', getDefaultCycleData());
-  const [form, setForm] = useState<Omit<BodyMeasurement, 'date'>>({
+  const { data, addMeasurement, removeMeasurement } = useHealthData();
+  const [form, setForm] = useState<Omit<BodyMeasurement, 'date' | 'id'>>({
     weight: null, waist: null, hip: null, neck: null, chest: null,
   });
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  const addMeasurement = () => {
-    const entry: BodyMeasurement = {
+  const handleAddMeasurement = async () => {
+    await addMeasurement({
       date: format(selectedDate, 'yyyy-MM-dd'),
       ...form,
-    };
-    setData(prev => ({
-      ...prev,
-      measurements: [entry, ...prev.measurements].sort((a, b) => b.date.localeCompare(a.date)),
-    }));
+    });
     setForm({ weight: null, waist: null, hip: null, neck: null, chest: null });
     setSelectedDate(new Date());
   };
 
-  const removeMeasurement = (idx: number) => {
-    setData(prev => ({
-      ...prev,
-      measurements: prev.measurements.filter((_, i) => i !== idx),
-    }));
+  const handleRemoveMeasurement = (id: string) => {
+    removeMeasurement(id);
   };
 
   const getDelta = (current: number | null, previous: number | null) => {
@@ -104,7 +96,7 @@ export default function BodyPage() {
             ))}
           </div>
           <button
-            onClick={addMeasurement}
+            onClick={handleAddMeasurement}
             className="w-full bg-primary text-primary-foreground rounded-lg py-2.5 text-sm font-medium flex items-center justify-center gap-2"
           >
             <Plus className="w-4 h-4" /> Save Entry
@@ -117,10 +109,10 @@ export default function BodyPage() {
             {data.measurements.map((m, idx) => {
               const prev = data.measurements[idx + 1] || null;
               return (
-                <div key={idx} className="bg-card rounded-xl border border-border px-4 py-3">
+                <div key={m.id ?? idx} className="bg-card rounded-xl border border-border px-4 py-3">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-xs text-muted-foreground">{m.date}</p>
-                    <button onClick={() => removeMeasurement(idx)}>
+                    <button onClick={() => m.id && handleRemoveMeasurement(m.id)}>
                       <Trash2 className="w-3.5 h-3.5 text-muted-foreground" />
                     </button>
                   </div>

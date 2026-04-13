@@ -8,6 +8,7 @@ import WorkoutsPage from "./pages/WorkoutsPage";
 import BodyPage from "./pages/BodyPage";
 import FoodsPage from "./pages/FoodsPage";
 import NotFound from "./pages/NotFound";
+import { HealthDataProvider } from "@/contexts/HealthDataContext";
 
 const queryClient = new QueryClient();
 
@@ -16,16 +17,18 @@ const App = () => (
     <TooltipProvider>
       <Sonner />
       <BrowserRouter>
-        <div className="max-w-lg mx-auto min-h-screen">
-          <Routes>
-            <Route path="/" element={<MealsPage />} />
-            <Route path="/workouts" element={<WorkoutsPage />} />
-            <Route path="/body" element={<BodyPage />} />
-            <Route path="/foods" element={<FoodsPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <BottomNav />
-        </div>
+        <HealthDataProvider>
+          <div className="max-w-lg mx-auto min-h-screen">
+            <Routes>
+              <Route path="/" element={<MealsPage />} />
+              <Route path="/workouts" element={<WorkoutsPage />} />
+              <Route path="/body" element={<BodyPage />} />
+              <Route path="/foods" element={<FoodsPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <BottomNav />
+          </div>
+        </HealthDataProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Plus, X, ChevronDown, ChevronUp } from 'lucide-react';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { getDefaultCycleData, getCycleDay } from '@/lib/cycleUtils';
+import { useHealthData } from '@/contexts/HealthDataContext';
+import { getCycleDay } from '@/lib/cycleUtils';
 import CycleHeader from '@/components/CycleHeader';
-import type { CycleData, Meal } from '@/lib/types';
+import type { Meal } from '@/lib/types';
 
 export default function MealsPage() {
-  const [data, setData] = useLocalStorage<CycleData>('fitnessData', getDefaultCycleData());
+  const { data, setData } = useHealthData();
   const currentDay = getCycleDay(data.cycleStartDate);
   const dayPlan = data.mealPlans.find(p => p.day === currentDay) || { day: currentDay, meals: [] };
   const [expandedMeal, setExpandedMeal] = useState<string | null>(dayPlan.meals[0]?.id || null);

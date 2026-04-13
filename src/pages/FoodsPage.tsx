@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Plus, X, Drumstick, Wheat, Salad } from 'lucide-react';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { getDefaultCycleData } from '@/lib/cycleUtils';
-import type { CycleData, FoodList } from '@/lib/types';
+import { useHealthData } from '@/contexts/HealthDataContext';
+import type { FoodList } from '@/lib/types';
 
 const categories: { key: keyof FoodList; label: string; icon: typeof Drumstick; color: string }[] = [
   { key: 'proteins', label: 'Proteins', icon: Drumstick, color: 'text-red-400' },
@@ -11,7 +10,7 @@ const categories: { key: keyof FoodList; label: string; icon: typeof Drumstick; 
 ];
 
 export default function FoodsPage() {
-  const [data, setData] = useLocalStorage<CycleData>('fitnessData', getDefaultCycleData());
+  const { data, setData } = useHealthData();
   const [inputs, setInputs] = useState<Record<string, string>>({ proteins: '', carbohydrates: '', vegetables: '' });
 
   const addFood = (cat: keyof FoodList) => {
