@@ -13,11 +13,20 @@ export interface Exercise {
   id: string;
   name: string;
   weight: number | null;
+  sets: number | null;
+  reps: number | null;
+  notes: string;
+}
+
+export interface WorkoutGroup {
+  id: string;
+  name: string;
+  exercises: Exercise[];
 }
 
 export interface DayWorkout {
   day: number;
-  exercises: Exercise[];
+  groups: WorkoutGroup[];
 }
 
 export interface BodyMeasurement {

@@ -25,7 +25,7 @@ export function createEmptyMealPlan(day: number): DayMealPlan {
 }
 
 export function createEmptyWorkout(day: number): DayWorkout {
-  return { day, exercises: [] };
+  return { day, groups: [] };
 }
 
 export function getDefaultCycleData(): CycleData {
